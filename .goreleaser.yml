@@ -4,7 +4,8 @@ before:
   hooks:
     - go mod download
 builds:
-  - binary: golias
+  - id: golias
+    binary: golias
     env:
       - CGO_ENABLED=0
     goos:
@@ -37,3 +38,17 @@ changelog:
 archives:
   - files:
       - README.md
+nfpms:
+  - id: golias
+    name_template: "{{ .ProjectName }}_{{ .Version }}-1_{{ .Arch }}"
+    builds:
+      - golias
+    homepage: https://github.com/aozora0000/golias
+    maintainer: aozora0000 <aozora0000@gmail.com>
+    description: alias subcommand from yaml file
+    license: MIT
+    formats:
+      - deb
+      - rpm
+    bindir: /usr/local/bin
+    epoch: 1
