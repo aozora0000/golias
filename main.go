@@ -79,10 +79,6 @@ func main() {
 		Usage:    "alias subcommand from file",
 		Commands: commands,
 		Version:  version,
-		Metadata: map[string]interface{}{
-			"commit":     commit,
-			"created_at": date,
-		},
 	}
 
 	err = app.Run(os.Args)
