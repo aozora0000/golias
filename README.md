@@ -1,14 +1,21 @@
 # Golias
 
+## HowToUse
+
 yamlで管理するサブコマンド集
 
 素となるgoliasをコピーすると、対応したバイナリ名＋サブコマンドが作成出来ます。
 
-$HOME/.config/golias/[バイナリ名].yaml
-
 単体動作なら```command```、```commands```を使えばパイプライン接続が可能です。
 
 両方記述がある場合には```commands```のみが実行されます。
+
+### Config
+
+$HOME/.config/golias/[バイナリ名].yaml
+
+- ```$ golias edit``` エディタが立ち上がります
+- ```$ golias config``` configファイルの絶対パスを表示します
 
 ```yaml
 - name: example1
@@ -27,8 +34,9 @@ $HOME/.config/golias/[バイナリ名].yaml
   usage: list file count
 ```
 
-goliasをインストールしたディレクトリに別名コピーする
+### goliasをインストールしたディレクトリに別名コピーする
 
 ```terminal
 $ cp `which golias` $(dirname `which golias`)/hoge
 ```
+
