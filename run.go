@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/mattn/go-pipeline"
 	"github.com/urfave/cli/v2"
+	"os"
 	"os/exec"
 )
 
@@ -46,11 +47,10 @@ func Run(command SubCommand) func(ctx *cli.Context) error {
 			fmt.Println(string(out))
 		} else {
 			cmd := exec.Command(command.Command, command.Args...)
-			out, err := cmd.Output()
-			if err != nil {
-				return err
-			}
-			fmt.Print(string(out))
+			cmd.Stdin = os.Stdin
+			cmd.Stdout = os.Stdout
+			cmd.Stderr = os.Stderr
+			return cmd.Run()
 		}
 
 		return nil
