@@ -15,7 +15,7 @@ yamlで管理するサブコマンド集
 $HOME/.config/golias/[バイナリ名].yaml
 
 - ```$ golias edit``` エディタが立ち上がります
-- ```$ golias config``` configファイルの絶対パスを表示します
+- ```$ golias path``` configファイルの絶対パスを表示します
 
 ```yaml
 - name: example1

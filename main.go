@@ -22,10 +22,12 @@ func main() {
 	commands := []*cli.Command{
 		{
 			Name:   "init",
+			Usage:  "create config file :" + config,
 			Action: _init,
 		},
 		{
-			Name: "edit",
+			Name:  "edit",
+			Usage: fmt.Sprintf("edit config file %s", os.Getenv("EDITOR")),
 			Action: func(context *cli.Context) error {
 				cmd := exec.Command(os.Getenv("EDITOR"), config)
 				cmd.Stdin = os.Stdin
@@ -35,7 +37,7 @@ func main() {
 			},
 		},
 		{
-			Name:  "config",
+			Name:  "path",
 			Usage: "display config path",
 			Action: func(context *cli.Context) error {
 				fmt.Println(config)
