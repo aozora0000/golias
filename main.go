@@ -35,6 +35,14 @@ func main() {
 				return cmd.Run()
 			},
 		},
+		{
+			Name:  "config",
+			Usage: "display config path",
+			Action: func(context *cli.Context) error {
+				fmt.Println(config)
+				return nil
+			},
+		},
 	}
 
 	if Exists(config) {
