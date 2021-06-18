@@ -78,7 +78,11 @@ func main() {
 		Name:     path.Base(os.Args[0]),
 		Usage:    "alias subcommand from file",
 		Commands: commands,
-		Version:  fmt.Sprintf("%s:%s:%s", version, commit, date),
+		Version:  version,
+		Metadata: map[string]interface{}{
+			"commit":     commit,
+			"created_at": date,
+		},
 	}
 
 	err = app.Run(os.Args)
