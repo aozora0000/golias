@@ -25,3 +25,9 @@ $HOME/.config/golias/[バイナリ名].yaml
       args:
        - -l
 ```
+
+goliasをインストールしたディレクトリに別名コピーする
+
+```terminal
+$ cp `which golias` $(dirname `which golias`)/hoge
+```
