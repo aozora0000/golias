@@ -4,8 +4,7 @@ before:
   hooks:
     - go mod download
 builds:
-  - main: main.go
-    binary: golias
+  - binary: golias
     env:
       - CGO_ENABLED=0
     goos:
