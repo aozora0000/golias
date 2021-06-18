@@ -12,8 +12,8 @@ import (
 )
 
 var (
-	Version = "local"
-	Commit  = "none"
+	version = "local"
+	commit  = "none"
 )
 
 func main() {
@@ -77,7 +77,7 @@ func main() {
 		Name:     path.Base(os.Args[0]),
 		Usage:    "alias subcommand from file",
 		Commands: commands,
-		Version:  fmt.Sprintf("%s:%s", Version, Commit),
+		Version:  fmt.Sprintf("%s:%s", version, commit),
 	}
 
 	err = app.Run(os.Args)
