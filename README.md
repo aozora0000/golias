@@ -14,16 +14,17 @@ $HOME/.config/golias/[バイナリ名].yaml
 - name: example1
   command: ls
   args:
-    - -la
+  - -la
   usage: list file display
 - name: example2
   commands:
-    - command: ls
-      args:
-       - -la
-    - command: wc
-      args:
-       - -l
+  - command: ls
+    args:
+    - -la
+  - command: wc
+    args:
+    - -l
+  usage: list file count
 ```
 
 goliasをインストールしたディレクトリに別名コピーする

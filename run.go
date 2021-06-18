@@ -1,5 +1,12 @@
 package main
 
+import (
+	"fmt"
+	"github.com/mattn/go-pipeline"
+	"github.com/urfave/cli/v2"
+	"os/exec"
+)
+
 type SubCommand struct {
 	Name     string
 	Command  string
@@ -27,4 +34,25 @@ func (c Command) Get() []string {
 		output = append(output, arg)
 	}
 	return output
+}
+
+func Run(command SubCommand) func(ctx *cli.Context) error {
+	return func(context *cli.Context) error {
+		if len(command.Commands) != 0 {
+			out, err := pipeline.Output(command.GetCommands()...)
+			if err != nil {
+				return err
+			}
+			fmt.Println(string(out))
+		} else {
+			cmd := exec.Command(command.Command, command.Args...)
+			out, err := cmd.Output()
+			if err != nil {
+				return err
+			}
+			fmt.Print(string(out))
+		}
+
+		return nil
+	}
 }

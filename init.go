@@ -23,17 +23,23 @@ func _init(ctx *cli.Context) error {
 			return err
 		}
 		defer f.Close()
-		example := SubCommand{
-			Name:    "example",
-			Command: "ls",
-			Commands: []Command{
-				{Command: "ls", Args: []string{"-la"}},
-				{Command: "wc", Args: []string{"-l"}},
+		example := []SubCommand{
+			{
+				Name:    "example1",
+				Command: "ls",
+				Args:    []string{"-la"},
+				Usage:   "list file display",
 			},
-			Args:  []string{"-la"},
-			Usage: "list file display",
+			{
+				Name: "example2",
+				Commands: []Command{
+					{Command: "ls", Args: []string{"-la"}},
+					{Command: "wc", Args: []string{"-l"}},
+				},
+				Usage: "list file count",
+			},
 		}
-		b, err := yaml.Marshal([]SubCommand{example})
+		b, err := yaml.Marshal(example)
 		if err != nil {
 			return err
 		}
