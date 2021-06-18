@@ -11,6 +11,11 @@ import (
 	"path/filepath"
 )
 
+var (
+	Version = "local"
+	Commit  = "none"
+)
+
 func main() {
 	conf, err := os.UserConfigDir()
 	if err != nil {
@@ -72,6 +77,7 @@ func main() {
 		Name:     path.Base(os.Args[0]),
 		Usage:    "alias subcommand from file",
 		Commands: commands,
+		Version:  fmt.Sprintf("%s:%s", Version, Commit),
 	}
 
 	err = app.Run(os.Args)
