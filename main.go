@@ -80,7 +80,6 @@ func main() {
 		Commands: commands,
 		Version:  version,
 	}
-
 	err = app.Run(os.Args)
 	if err != nil {
 		fmt.Println(err.Error())

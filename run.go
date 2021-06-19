@@ -16,6 +16,15 @@ type SubCommand struct {
 	Usage    string
 }
 
+func (s SubCommand) GetCommand() []string {
+	var output []string
+	output = append(output, s.Command)
+	for _, c := range s.Args {
+		output = append(output, c)
+	}
+	return output
+}
+
 func (s SubCommand) GetCommands() [][]string {
 	var output [][]string
 	for _, c := range s.Commands {
@@ -30,7 +39,7 @@ type Command struct {
 }
 
 func (c Command) Get() []string {
-	output := []string{c.Command}
+	output := []string{"sh", "-c", c.Command}
 	for _, arg := range c.Args {
 		output = append(output, arg)
 	}
@@ -46,7 +55,9 @@ func Run(command SubCommand) func(ctx *cli.Context) error {
 			}
 			fmt.Println(string(out))
 		} else {
-			cmd := exec.Command(command.Command, command.Args...)
+			c := append([]string{"-c"}, command.GetCommand()...)
+			cmd := exec.Command("sh", c...)
+			fmt.Println(cmd.String())
 			cmd.Stdin = os.Stdin
 			cmd.Stdout = os.Stdout
 			cmd.Stderr = os.Stderr
