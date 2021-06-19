@@ -6,6 +6,7 @@ import (
 	"github.com/urfave/cli/v2"
 	"os"
 	"os/exec"
+	"strings"
 )
 
 type SubCommand struct {
@@ -14,6 +15,10 @@ type SubCommand struct {
 	Commands []Command
 	Args     ListOrString
 	Usage    string
+}
+
+func (s SubCommand) GetCommandString() string {
+	return "'" + strings.Join(s.GetCommand(), " ") + "'"
 }
 
 func (s SubCommand) GetCommand() []string {
@@ -28,7 +33,7 @@ func (s SubCommand) GetCommand() []string {
 func (s SubCommand) GetCommands() [][]string {
 	var output [][]string
 	for _, c := range s.Commands {
-		output = append(output, c.Get())
+		output = append(output, []string{"sh", "-c", c.GetCommandString()})
 	}
 	return output
 }
@@ -39,11 +44,15 @@ type Command struct {
 }
 
 func (c Command) Get() []string {
-	output := []string{"sh", "-c", c.Command}
+	output := []string{c.Command}
 	for _, arg := range c.Args {
 		output = append(output, arg)
 	}
 	return output
+}
+
+func (c Command) GetCommandString() string {
+	return "'" + strings.Join(c.Get(), " ") + "'"
 }
 
 func Run(command SubCommand) func(ctx *cli.Context) error {
@@ -55,7 +64,7 @@ func Run(command SubCommand) func(ctx *cli.Context) error {
 			}
 			fmt.Println(string(out))
 		} else {
-			c := append([]string{"-c"}, command.GetCommand()...)
+			c := append([]string{"-c"}, command.GetCommandString())
 			cmd := exec.Command("sh", c...)
 			fmt.Println(cmd.String())
 			cmd.Stdin = os.Stdin
