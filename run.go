@@ -33,7 +33,8 @@ func (s SubCommand) GetCommand() []string {
 func (s SubCommand) GetCommands() [][]string {
 	var output [][]string
 	for _, c := range s.Commands {
-		output = append(output, []string{"sh", "-c", c.GetCommandString()})
+		cm := append([]string{"sh", "-c"},, c.Get()...)
+		output = append(output, cm)
 	}
 	return output
 }
@@ -64,7 +65,7 @@ func Run(command SubCommand) func(ctx *cli.Context) error {
 			}
 			fmt.Println(string(out))
 		} else {
-			c := append([]string{"-c"}, command.GetCommandString())
+			c := append([]string{"-c"}, command.GetCommand()...)
 			cmd := exec.Command("sh", c...)
 			fmt.Println(cmd.String())
 			cmd.Stdin = os.Stdin
