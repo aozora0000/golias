@@ -33,7 +33,7 @@ func (s SubCommand) GetCommand() []string {
 func (s SubCommand) GetCommands() [][]string {
 	var output [][]string
 	for _, c := range s.Commands {
-		cm := append([]string{"sh", "-c"},, c.Get()...)
+		cm := append([]string{"sh", "-c"}, c.Get()...)
 		output = append(output, cm)
 	}
 	return output
