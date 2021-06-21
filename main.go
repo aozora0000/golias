@@ -69,6 +69,23 @@ func main() {
 				Name:   command.Name,
 				Usage:  command.Usage,
 				Action: Run(command),
+				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:    "input",
+						Aliases: []string{"i"},
+						Value:   os.Stdin.Name(),
+					},
+					&cli.StringFlag{
+						Name:    "output",
+						Aliases: []string{"o"},
+						Value:   os.Stdout.Name(),
+					},
+					&cli.StringFlag{
+						Name:    "error",
+						Aliases: []string{"e", "err"},
+						Value:   os.Stderr.Name(),
+					},
+				},
 			}
 			commands = append(commands, c)
 		}
