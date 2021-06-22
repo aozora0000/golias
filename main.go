@@ -51,7 +51,7 @@ func main() {
 			},
 		},
 	}
-
+	var Action func(ctx *cli.Context) error = nil
 	if Exists(config) {
 		buf, err := ioutil.ReadFile(config)
 		if err != nil {
@@ -64,7 +64,11 @@ func main() {
 			fmt.Println(err.Error())
 			os.Exit(1)
 		}
+
 		for _, command := range subcommands {
+			if command.Name == "main" {
+				Action = Run(command)
+			}
 			c := &cli.Command{
 				Name:   command.Name,
 				Usage:  command.Usage,
@@ -96,6 +100,7 @@ func main() {
 		Usage:    "alias subcommand from file",
 		Commands: commands,
 		Version:  version,
+		Action:   Action,
 	}
 	err = app.Run(os.Args)
 	if err != nil {

@@ -38,6 +38,14 @@ func _init(ctx *cli.Context) error {
 				},
 				Usage: "list file count",
 			},
+			{
+				Name:    "example3",
+				Command: "echo %date",
+				Envs: map[string]string{
+					"date": "date +%Y-%m-%d",
+				},
+				Usage: "echo date format from envs",
+			},
 		}
 		b, err := yaml.Marshal(example)
 		if err != nil {
