@@ -35,7 +35,9 @@ $HOME/.config/golias/[バイナリ名].yaml
 - name: example3
   command: echo %date
   envs:
-    date: date '+%Y-%m-%d'
+    date: date '%format'
+  params:
+    FORMAT: +%Y-%m-%d
 ```
 
 #### args
@@ -47,6 +49,10 @@ $HOME/.config/golias/[バイナリ名].yaml
 ```command```に対して```%{key}```の値をシェル実行結果から代入出来る。
 
 argsに比べて動的に代入出来る為便利に使える。
+
+#### params
+
+````command````と````envs````に対して```%{key}```の値を静的に代入出来る。 固定ディレクトリ名等共通する静的パラメータを入れておくと便利
 
 ### 単体実行について
 
