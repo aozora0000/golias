@@ -15,6 +15,7 @@ type SubCommand struct {
 	Commands []Command
 	Args     ListOrString
 	Envs     map[string]string
+	Params   map[string]string
 	Usage    string
 }
 
@@ -24,7 +25,7 @@ func (s SubCommand) GetCommand(context *cli.Context) string {
 	for _, c := range s.Args {
 		output = append(output, strings.TrimRight(c, "\r\n"))
 	}
-	return s.replaceEnvironment(_replaceArguments(context, strings.Join(output, " ")))
+	return s.replaces(_replaceArguments(context, strings.Join(output, " ")))
 }
 
 func (s SubCommand) GetCommands(context *cli.Context) string {
@@ -32,17 +33,41 @@ func (s SubCommand) GetCommands(context *cli.Context) string {
 	for _, c := range s.Commands {
 		output = append(output, strings.TrimRight(c.Get(), "\r\n"))
 	}
-	return s.replaceEnvironment(_replaceArguments(context, strings.Join(output, " | ")))
+	return s.replaces(_replaceArguments(context, strings.Join(output, " | ")))
+}
+
+func (s SubCommand) replaces(str string) string {
+	str = s.replaceEnvironment(str)
+	str = s.replaceParameter(str)
+	return str
+}
+
+func (s SubCommand) replaceParameter(str string) string {
+	results := map[string]string{}
+	for key, param := range s.Params {
+		for k, re := range results {
+			param = strings.Replace(param, fmt.Sprintf("%%%s", k), strings.TrimRight(string(re), "\r\n"), -1)
+		}
+		results[key] = param
+		str = strings.Replace(str, fmt.Sprintf("%%%s", key), strings.TrimRight(param, "\r\n"), -1)
+	}
+	return str
 }
 
 func (s SubCommand) replaceEnvironment(str string) string {
+	results := map[string]string{}
 	for key, command := range s.Envs {
+		for k, re := range results {
+			command = strings.Replace(command, fmt.Sprintf("%%%s", k), strings.TrimRight(string(re), "\r\n"), -1)
+		}
+		command = s.replaceParameter(command)
 		cmd := exec.Command("/bin/sh", []string{"-c", command}...)
 		b, err := cmd.Output()
 		if err != nil {
 			fmt.Println(fmt.Errorf("environment error. %s : %s", command, err.Error()).Error())
 			os.Exit(1)
 		}
+		results[key] = string(b)
 		str = strings.Replace(str, fmt.Sprintf("%%%s", key), strings.TrimRight(string(b), "\r\n"), -1)
 	}
 	return str
