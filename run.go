@@ -37,9 +37,7 @@ func (s SubCommand) GetCommands(context *cli.Context) string {
 }
 
 func (s SubCommand) replaces(str string) string {
-	str = s.replaceEnvironment(str)
-	str = s.replaceParameter(str)
-	return str
+	return NewPool(s.Params, s.Envs).Init().Replace(str)
 }
 
 func (s SubCommand) replaceParameter(str string) string {
