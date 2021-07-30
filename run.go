@@ -25,7 +25,7 @@ func (s SubCommand) GetCommand(context *cli.Context) string {
 	for _, c := range s.Args {
 		output = append(output, strings.TrimRight(c, "\r\n"))
 	}
-	return s.replaces(_replaceArguments(context, strings.Join(output, " ")))
+	return s.replaces(context.Args().Slice(), strings.Join(output, " "))
 }
 
 func (s SubCommand) GetCommands(context *cli.Context) string {
@@ -33,11 +33,11 @@ func (s SubCommand) GetCommands(context *cli.Context) string {
 	for _, c := range s.Commands {
 		output = append(output, strings.TrimRight(c.Get(), "\r\n"))
 	}
-	return s.replaces(_replaceArguments(context, strings.Join(output, " | ")))
+	return s.replaces(context.Args().Slice(), strings.Join(output, " | "))
 }
 
-func (s SubCommand) replaces(str string) string {
-	return NewPool(s.Params, s.Envs).Init().Replace(str)
+func (s SubCommand) replaces(args []string, str string) string {
+	return NewPool(s.Params, s.Envs, args).Init().Replace(str)
 }
 
 func (s SubCommand) replaceParameter(str string) string {

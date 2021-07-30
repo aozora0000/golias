@@ -4,16 +4,46 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strconv"
 	"strings"
 )
 
 type Pool struct {
 	completed map[string]string
 	tasks     map[string]string
+	args      []string
 }
 
-func NewPool(params map[string]string, envs map[string]string) Pool {
-	return Pool{completed: params, tasks: envs}
+func NewPool(params map[string]string, envs map[string]string, args []string) Pool {
+	if params == nil {
+		params = map[string]string{}
+	}
+	if envs == nil {
+		params = map[string]string{}
+	}
+	if args == nil {
+		args = []string{}
+	}
+	return Pool{completed: mergeHashmap(createArgMap(args), params), tasks: envs}
+}
+
+func mergeHashmap(args ...map[string]string) map[string]string {
+	result := make(map[string]string)
+	for _, m := range args {
+		for key, val := range m {
+			result[key] = val
+		}
+	}
+	return result
+}
+
+func createArgMap(args []string) map[string]string {
+	result := make(map[string]string)
+	for i, value := range args {
+		result[strconv.Itoa(i)] = value
+	}
+	result["ARGS"] = strings.Join(args, " ")
+	return result
 }
 
 func (p Pool) Init() Pool {
@@ -72,7 +102,6 @@ func (p Pool) executeEnv(key string) {
 		fmt.Println(fmt.Errorf("environment error. %s : %s", p.tasks[key], err.Error()).Error())
 		os.Exit(1)
 	}
-	fmt.Println(p.completed)
 	p.completed[key] = strings.TrimSpace(string(b))
 	delete(p.tasks, key)
 }

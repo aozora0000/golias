@@ -28,10 +28,16 @@ func TestPool_Get(t *testing.T) {
 				"TEST_ENV_RESULT": "test",
 			},
 		},
+		{
+			name:   "empty test",
+			params: nil,
+			envs:   nil,
+			want:   map[string]string{},
+		},
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			got := NewPool(test.params, test.envs).Init().Get()
+			got := NewPool(test.params, test.envs, nil).Init().Get()
 			fmt.Println(got)
 			assert.Equal(t, test.want, got)
 			t.Logf("want: %v", test.want)
@@ -63,7 +69,7 @@ func TestPool_Replace(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			got := NewPool(test.params, test.envs).Init().Replace(test.command)
+			got := NewPool(test.params, test.envs, nil).Init().Replace(test.command)
 			assert.Equal(t, test.want, got)
 			t.Logf("want: %v", test.want)
 			t.Logf("got: %v", got)
