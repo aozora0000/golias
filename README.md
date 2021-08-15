@@ -94,3 +94,14 @@ $ golias
 $ cp `which golias` $(dirname `which golias`)/hoge
 ```
 
+[pwalk](https://github.com/aozora0000/pwalk)と組み合わせる事で、更に複雑なコマンドも簡素化出来ます。
+
+yaml生成済のバイナリをgoliasバイナリからコピーしてバージョンを合わせる
+
+```yaml
+- name: replace
+  command: ls `dirname %DIST_PATH` | sed 's/.yaml//g' | grep -v "golias" | pwalk "cp %APP_PATH/golias %APP_PATH/%1"
+  envs:
+    DIST_PATH: golias path
+    APP_PATH: dirname `which golias`
+```
