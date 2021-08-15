@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -70,7 +71,9 @@ func TestCipher_Encrypt(t *testing.T) {
 			c := Cipher{
 				key: tt.fields.key,
 			}
-			_, err := c.Encrypt(tt.args.text)
+			got, err := c.Encrypt(tt.args.text)
+			fmt.Println(got)
+			fmt.Println(c.Decrypt(got))
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Encrypt() error = %v, wantErr %v", err, tt.wantErr)
 				return

@@ -56,7 +56,7 @@ func (s SubCommand) replaceEnvironment(str string) string {
 	results := map[string]string{}
 	for key, command := range s.Envs {
 		for k, re := range results {
-			command = strings.Replace(command, fmt.Sprintf("%%%s", k), strings.TrimRight(string(re), "\r\n"), -1)
+			command = strings.Replace(command, "%"+k, strings.TrimRight(string(re), "\r\n"), -1)
 		}
 		command = s.replaceParameter(command)
 		cmd := exec.Command("/bin/sh", []string{"-c", command}...)
@@ -69,10 +69,6 @@ func (s SubCommand) replaceEnvironment(str string) string {
 		str = strings.Replace(str, fmt.Sprintf("%%%s", key), strings.TrimRight(string(b), "\r\n"), -1)
 	}
 	return str
-}
-
-func _replaceArguments(context *cli.Context, str string) string {
-	return str + " " + strings.Join(context.Args().Slice(), " ")
 }
 
 type Command struct {
@@ -97,6 +93,10 @@ func Run(command SubCommand) func(ctx *cli.Context) error {
 			cmd.Stdout = os.NewFile(uintptr(syscall.Stdout), context.String("output"))
 			cmd.Stderr = os.NewFile(uintptr(syscall.Stderr), context.String("error"))
 
+			if context.Bool("dry-run") {
+				fmt.Println(cmd.String())
+				return nil
+			}
 			return cmd.Run()
 		} else {
 			cmd := exec.Command("/bin/sh", []string{"-c", command.GetCommand(context)}...)
@@ -104,6 +104,10 @@ func Run(command SubCommand) func(ctx *cli.Context) error {
 			cmd.Stdin = os.NewFile(uintptr(syscall.Stdin), context.String("input"))
 			cmd.Stdout = os.NewFile(uintptr(syscall.Stdout), context.String("output"))
 			cmd.Stderr = os.NewFile(uintptr(syscall.Stderr), context.String("error"))
+			if context.Bool("dry-run") {
+				fmt.Println(cmd.String())
+				return nil
+			}
 			return cmd.Run()
 		}
 	}

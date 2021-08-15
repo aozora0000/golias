@@ -89,6 +89,10 @@ func main() {
 						Aliases: []string{"e", "err"},
 						Value:   os.Stderr.Name(),
 					},
+					&cli.BoolFlag{
+						Name:    "dry-run",
+						Aliases: []string{"D"},
+					},
 				},
 			}
 			commands = append(commands, c)

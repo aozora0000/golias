@@ -14,17 +14,17 @@ type Pool struct {
 	args      []string
 }
 
-func NewPool(params map[string]string, envs map[string]string, args []string) Pool {
+func NewPool(params map[string]string, envs map[string]string, args []string) *Pool {
 	if params == nil {
 		params = map[string]string{}
 	}
 	if envs == nil {
-		params = map[string]string{}
+		envs = map[string]string{}
 	}
 	if args == nil {
 		args = []string{}
 	}
-	return Pool{completed: mergeHashmap(createArgMap(args), params), tasks: envs}
+	return &Pool{completed: mergeHashmap(createArgMap(args), params), tasks: envs}
 }
 
 func mergeHashmap(args ...map[string]string) map[string]string {
@@ -46,7 +46,7 @@ func createArgMap(args []string) map[string]string {
 	return result
 }
 
-func (p Pool) Init() Pool {
+func (p *Pool) Init() *Pool {
 	for {
 		p.replaces()
 		if p.executeAll() {
@@ -55,18 +55,18 @@ func (p Pool) Init() Pool {
 	}
 }
 
-func (p Pool) Replace(command string) string {
+func (p *Pool) Replace(command string) string {
 	for key, value := range p.completed {
 		command = strings.ReplaceAll(command, "%"+key, value)
 	}
 	return command
 }
 
-func (p Pool) Get() map[string]string {
+func (p *Pool) Get() map[string]string {
 	return p.completed
 }
 
-func (p Pool) replaces() {
+func (p *Pool) replaces() {
 	for key, command := range p.tasks {
 		for k, val := range p.completed {
 			p.tasks[key] = strings.Replace(command, fmt.Sprintf("%%%s", k), val, -1)
@@ -74,11 +74,11 @@ func (p Pool) replaces() {
 	}
 }
 
-func (p Pool) isComplete() bool {
+func (p *Pool) isComplete() bool {
 	return len(p.tasks) == 0
 }
 
-func (p Pool) getExecutableEnv() map[string]string {
+func (p *Pool) getExecutableEnv() map[string]string {
 	result := make(map[string]string)
 	for key, command := range p.tasks {
 		if !strings.Contains(command, "%") {
@@ -88,14 +88,14 @@ func (p Pool) getExecutableEnv() map[string]string {
 	return result
 }
 
-func (p Pool) executeAll() bool {
+func (p *Pool) executeAll() bool {
 	for key := range p.getExecutableEnv() {
 		p.executeEnv(key)
 	}
 	return p.isComplete()
 }
 
-func (p Pool) executeEnv(key string) {
+func (p *Pool) executeEnv(key string) {
 	cmd := exec.Command("/bin/sh", []string{"-c", p.tasks[key]}...)
 	b, err := cmd.Output()
 	if err != nil {
